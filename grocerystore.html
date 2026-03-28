@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FreshMart Grocery Store</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#f5f7fa;
+}
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+background:linear-gradient(45deg,#2ecc71,#27ae60);
+color:white;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.logo img{
+width:40px;
+}
+
+#search{
+padding:10px;
+border:none;
+border-radius:20px;
+width:220px;
+}
+
+.nav-buttons{
+display:flex;
+gap:10px;
+}
+
+.cart-btn{
+background:white;
+color:#27ae60;
+border:none;
+padding:10px 15px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.checkout-btn{
+background:#ff9800;
+border:none;
+color:white;
+padding:10px 15px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.checkout-btn:hover{
+background:#e68900;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+padding:40px;
+background:white;
+}
+
+.hero h1{
+font-size:32px;
+color:#2c3e50;
+}
+
+.hero p{
+color:#777;
+margin-top:10px;
+}
+
+/* PRODUCTS */
+
+.section-title{
+text-align:center;
+margin:30px 0 10px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+padding:20px 40px;
+}
+
+.product{
+background:white;
+border-radius:10px;
+padding:20px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.product:hover{
+transform:translateY(-5px);
+}
+
+.product img{
+width:100%;
+height:150px;
+object-fit:cover;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+.product button{
+background:#2ecc71;
+border:none;
+color:white;
+padding:8px 12px;
+border-radius:20px;
+cursor:pointer;
+margin-top:8px;
+}
+
+.product button:hover{
+background:#27ae60;
+}
+
+/* CART */
+
+.cart{
+padding:20px 40px;
+}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+background:white;
+padding:10px;
+margin-bottom:10px;
+border-radius:8px;
+}
+
+.remove-btn{
+background:red;
+border:none;
+color:white;
+padding:5px 10px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.total{
+text-align:center;
+margin:20px;
+font-size:20px;
+}
+
+/* FOOTER */
+
+.footer{
+background:#2c3e50;
+color:white;
+text-align:center;
+padding:25px;
+margin-top:40px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="logo">
+<img src="https://img.icons8.com/color/96/shopping-basket.png">
+<h2>FreshMart</h2>
+</div>
+
+<input type="text" id="search" placeholder="Search groceries...">
+
+<div class="nav-buttons">
+<button class="cart-btn">
+🛒 Cart (<span id="cart-count">0</span>)
+</button>
+
+<button id="checkout-btn" class="checkout-btn">
+Checkout
+</button>
+</div>
+
+</header>
+
+<section class="hero">
+<h1>Fresh Groceries Delivered Fast</h1>
+<p>Healthy food for your daily life</p>
+</section>
+
+<h2 class="section-title">Products</h2>
+
+<div class="products" id="product-list"></div>
+
+<h2 class="section-title">Your Cart</h2>
+
+<div id="cart" class="cart"></div>
+
+<h3 class="total">Total: ₹<span id="total">0</span></h3>
+
+<footer class="footer">
+
+<h3>Contact Us</h3>
+<p>Phone: +91 7876632564</p>
+<p>Email: ankushthakur102004@gmail.com</p>
+<p>© 2025 FreshMart Grocery Store</p>
+
+</footer>
+
+<script>
+const products = [
+{name:"Apple",price:120,img:"https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=400"},
+{name:"Banana",price:60,img:"https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg"},
+{name:"Milk",price:50,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{name:"Bread",price:40,img:"https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=400"},
+{name:"Tomato",price:30,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
+{name:"Potato",price:25,img:"https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400"}
+];
+
+let cart = [];
+
+const productList = document.getElementById("product-list");
+const cartDiv = document.getElementById("cart");
+const cartCount = document.getElementById("cart-count");
+const totalSpan = document.getElementById("total");
+
+function displayProducts(list){
+productList.innerHTML="";
+
+list.forEach((product)=>{
+const div=document.createElement("div");
+div.className="product";
+
+div.innerHTML=`
+<img src="${product.img}">
+<h3>${product.name}</h3>
+<p>₹${product.price}</p>
+<button>Add to Cart</button>
+`;
+
+div.querySelector("button").addEventListener("click",()=>{
+addToCart(product);
+});
+
+productList.appendChild(div);
+});
+}
+
+displayProducts(products);
+
+function addToCart(product){
+cart.push(product);
+updateCart();
+}
+
+function updateCart(){
+cartDiv.innerHTML="";
+let total=0;
+
+cart.forEach((item,index)=>{
+const div=document.createElement("div");
+div.className="cart-item";
+
+div.innerHTML=`
+<span>${item.name} - ₹${item.price}</span>
+<button class="remove-btn">Remove</button>
+`;
+
+div.querySelector("button").addEventListener("click",()=>{
+removeItem(index);
+});
+
+cartDiv.appendChild(div);
+total+=item.price;
+});
+
+cartCount.textContent=cart.length;
+totalSpan.textContent=total;
+}
+
+function removeItem(index){
+cart.splice(index,1);
+updateCart();
+}
+
+document.getElementById("search").addEventListener("keyup",function(){
+const value=this.value.toLowerCase();
+const filtered=products.filter(product =>
+product.name.toLowerCase().includes(value)
+);
+displayProducts(filtered);
+});
+
+document.getElementById("checkout-btn").addEventListener("click",function(){
+if(cart.length===0){
+alert("Your cart is empty");
+return;
+}
+
+alert("Order placed successfully!");
+cart=[];
+updateCart();
+});
+</script>
+
+</body>
+</html>
